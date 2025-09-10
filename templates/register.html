@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Register - SecurePass Password Manager{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Create Your Account</h2>
+        {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="master_password">Master Password</label>
+                <div class="password-input-container">
+                    <input type="password" id="master_password" name="master_password" required>
+                    <button type="button" class="btn-toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <small>Password must be at least 8 characters long</small>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <div class="password-input-container">
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                    <button type="button" class="btn-toggle-password" id="toggleConfirmPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <p class="auth-link">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle for master password
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('master_password');
+    const eyeIcon = togglePassword.querySelector('i');
+    
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Toggle eye icon
+        if (type === 'password') {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    });
+    
+    // Toggle for confirm password
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const confirmEyeIcon = toggleConfirmPassword.querySelector('i');
+    
+    toggleConfirmPassword.addEventListener('click', function() {
+        const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        confirmPasswordInput.setAttribute('type', type);
+        
+        // Toggle eye icon
+        if (type === 'password') {
+            confirmEyeIcon.classList.remove('fa-eye-slash');
+            confirmEyeIcon.classList.add('fa-eye');
+        } else {
+            confirmEyeIcon.classList.remove('fa-eye');
+            confirmEyeIcon.classList.add('fa-eye-slash');
+        }
+    });
+    
+    // Add focus effect to username field to match password field
+    const usernameInput = document.getElementById('username');
+    if (usernameInput) {
+        usernameInput.addEventListener('focus', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 0 0 2px rgba(187, 134, 252, 0.3)';
+        });
+        
+        usernameInput.addEventListener('blur', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    }
+});
+</script>
+{% endblock %}

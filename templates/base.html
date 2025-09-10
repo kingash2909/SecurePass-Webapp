@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SecurePass Password Manager{% endblock %}</title>
+    <!-- Use minified CSS in production for better performance -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/min/style.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-lock"></i> SecurePass</h1>
+            <nav>
+                {% if session.username %}
+                    <span>Welcome, {{ session.username }}!</span>
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                    <a href="{{ url_for('forgot_password') }}">Forgot Password</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 SecurePass Password Manager. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Use minified JavaScript in production for better performance -->
+    <script src="{{ url_for('static', filename='js/min/main.min.js') }}"></script>
+</body>
+</html>

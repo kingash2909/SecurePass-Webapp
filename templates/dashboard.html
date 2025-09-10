@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - SecurePass Password Manager{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="dashboard-title">
+            <h2>Welcome, {{ session.username }}!</h2>
+            <p class="subtitle">Manage your passwords securely</p>
+        </div>
+        <div class="dashboard-actions">
+            <button id="addPasswordBtn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Password
+            </button>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Search passwords...">
+            <div class="search-stats">
+                <span id="passwordCount">0</span> passwords
+            </div>
+        </div>
+
+        <div class="password-list" id="passwordList">
+            <!-- Password entries will be loaded here -->
+        </div>
+        
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-content">
+                <i class="fas fa-key fa-3x"></i>
+                <h3>No Passwords Found</h3>
+                <p>Get started by adding your first password.</p>
+                <button id="addFirstPasswordBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Your First Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recovery Key Section -->
+<div class="recovery-section">
+    <h3>Account Recovery</h3>
+    <p>Generate a recovery key to securely access your account if you forget your master password.</p>
+    <button id="generateRecoveryKeyBtn" class="btn btn-secondary">
+        <i class="fas fa-key"></i> Generate Recovery Key
+    </button>
+    <div id="recoveryKeyDisplay" class="recovery-key-display" style="display: none;">
+        <p><strong>Your Recovery Key:</strong></p>
+        <div class="recovery-key-container">
+            <code id="recoveryKeyText"></code>
+            <button id="copyRecoveryKeyBtn" class="btn btn-small">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </div>
+        <p class="warning">
+            <i class="fas fa-exclamation-triangle"></i> 
+            Save this key in a secure location. You will only see it once!
+        </p>
+        <button id="downloadRecoveryKeyBtn" class="btn btn-small btn-secondary">
+            <i class="fas fa-download"></i> Download as Text File
+        </button>
+    </div>
+</div>
+
+<!-- Add Password Modal -->
+<div id="addPasswordModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add New Password</h2>
+        <div class="modal-body">
+            <form id="addPasswordForm">
+                <div class="form-group">
+                    <label for="siteName">Site Name <span class="required">*</span></label>
+                    <input type="text" id="siteName" required placeholder="e.g., Google, Facebook">
+                    <small>Enter a descriptive name for this account</small>
+                </div>
+                <div class="form-group">
+                    <label for="siteUrl">Site URL</label>
+                    <input type="url" id="siteUrl" placeholder="https://example.com">
+                    <small>Full URL of the website (optional)</small>
+                </div>
+                <div class="form-group">
+                    <label for="siteUsername">Username/Email <span class="required">*</span></label>
+                    <input type="text" id="siteUsername" required placeholder="your@email.com">
+                    <small>Your login identifier for this site</small>
+                </div>
+                <div class="form-group">
+                    <label for="sitePassword">Password <span class="required">*</span></label>
+                    <div class="password-input-container">
+                        <input type="password" id="sitePassword" required placeholder="Enter or generate a password">
+                        <button type="button" class="btn-toggle-password" id="toggleSitePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength-meter">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <div class="strength-label" id="strengthLabel">Password Strength: None</div>
+                    </div>
+                    <button type="button" id="generatePasswordBtn" class="btn btn-small">
+                        <i class="fas fa-random"></i> Generate Secure Password
+                    </button>
+                </div>
+                <div class="form-group master-password-group">
+                    <label for="masterPassword">Master Password <span class="required">*</span></label>
+                    <div class="password-input-container">
+                        <input type="password" id="masterPassword" required placeholder="Enter your master password to encrypt this password">
+                        <button type="button" class="btn-toggle-password" id="toggleMasterPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="master-password-hint">Required to encrypt this password with your master key</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="cancelAddBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Password Detail Modal -->
+<div id="passwordDetailModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Password Details</h2>
+        <div class="modal-body">
+            <div class="password-detail">
+                <div class="detail-row">
+                    <label>Site Name:</label>
+                    <span id="detailSiteName"></span>
+                </div>
+                <div class="detail-row">
+                    <label>Site URL:</label>
+                    <span id="detailSiteUrl"></span>
+                    <a href="#" id="visitSiteLink" class="btn btn-small btn-secondary" target="_blank" style="margin-top: 5px; display: none;">
+                        <i class="fas fa-external-link-alt"></i> Visit Site
+                    </a>
+                </div>
+                <div class="detail-row">
+                    <label>Username:</label>
+                    <span id="detailUsername"></span>
+                    <button id="copyUsernameBtn" class="btn btn-small" style="margin-top: 5px;">
+                        <i class="fas fa-copy"></i> Copy Username
+                    </button>
+                </div>
+                <div class="detail-row">
+                    <label>Password:</label>
+                    <div class="password-display">
+                        <span id="detailPassword">••••••••</span>
+                        <input type="password" id="decryptMasterPassword" placeholder="Enter master password to decrypt">
+                        <div class="password-actions">
+                            <button id="showPasswordBtn" class="btn btn-small">Show</button>
+                            <button id="copyPasswordBtn" class="btn btn-small">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <button id="deletePasswordBtn" class="btn btn-small btn-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin fa-3x"></i>
+        <p id="loadingText">Processing...</p>
+    </div>
+</div>
+
+<script>
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + N to add new password
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        document.getElementById('addPasswordBtn')?.click();
+    }
+    
+    // Esc to close modals
+    if (e.key === 'Escape') {
+        const openModals = document.querySelectorAll('.modal[style*="block"]');
+        openModals.forEach(modal => {
+            modal.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.style.animation = '';
+            }, 300);
+        });
+    }
+    
+    // Ctrl/Cmd + F to focus search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        document.getElementById('searchInput')?.focus();
+    }
+});
+
+// Add first password button
+document.getElementById('addFirstPasswordBtn')?.addEventListener('click', function() {
+    document.getElementById('addPasswordBtn').click();
+});
+</script>
+{% endblock %}

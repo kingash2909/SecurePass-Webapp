@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <div class="hero-content">
+        <h2>Secure Your Digital Life</h2>
+        <p>SecurePass is the most secure and user-friendly password manager available. Keep all your passwords safe and accessible with our elegant dark theme interface.</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+            <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+        </div>
+    </div>
+</div>
+
+<div class="features">
+    <div class="feature">
+        <i class="fas fa-shield-alt feature-icon"></i>
+        <h3>Military-Grade Encryption</h3>
+        <p>All your passwords are encrypted with AES-256 before being stored.</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-user-secret feature-icon"></i>
+        <h3>Zero-Knowledge Privacy</h3>
+        <p>We never see your passwords. Only you have access to your data.</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-moon feature-icon"></i>
+        <h3>Dark Theme Interface</h3>
+        <p>Easy on the eyes with our sleek dark theme design.</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-bolt feature-icon"></i>
+        <h3>Lightning Fast</h3>
+        <p>Access your passwords instantly with our optimized performance.</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-sync feature-icon"></i>
+        <h3>Cross-Platform Sync</h3>
+        <p>Access your passwords from any device, anywhere.</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-robot feature-icon"></i>
+        <h3>AI-Powered Insights</h3>
+        <p>Get personalized security recommendations.</p>
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="cta-content">
+        <h3>Ready to Secure Your Digital Life?</h3>
+        <p>Join thousands of users who trust SecurePass with their passwords.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Login - SecurePass Password Manager{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Login to Your Account</h2>
+        {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="master_password">Master Password</label>
+                <div class="password-input-container">
+                    <input type="password" id="master_password" name="master_password" required>
+                    <button type="button" class="btn-toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <div class="auth-links">
+            <p class="auth-link">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+            <p class="auth-link"><a href="{{ url_for('forgot_password') }}">Forgot Password?</a></p>
+            <p class="auth-link"><a href="{{ url_for('use_recovery_key') }}">Use Recovery Key</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('master_password');
+    const eyeIcon = togglePassword.querySelector('i');
+    
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Toggle eye icon
+        if (type === 'password') {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    });
+    
+    // Add focus effect to username field to match password field
+    const usernameInput = document.getElementById('username');
+    if (usernameInput) {
+        usernameInput.addEventListener('focus', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 0 0 2px rgba(187, 134, 252, 0.3)';
+        });
+        
+        usernameInput.addEventListener('blur', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    }
+});
+</script>
+{% endblock %}
