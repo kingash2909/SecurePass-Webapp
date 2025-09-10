@@ -26,7 +26,8 @@ from database import create_recovery_key, get_recovery_key_by_user_id, verify_re
 init_db()
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)  # Generate a random secret key for sessions
+# Use a fixed secret key in production from environment variable, otherwise generate a random one
+app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
 
 # Email configuration - Production ready settings
 EMAIL_CONFIG = {
@@ -547,6 +548,18 @@ def generate_password():
     # Generate a secure password
     generated_password = generate_secure_password(length)
     return jsonify({'password': generated_password})
+
+@app.route('/health')
+def health_check():
+    """
+    Health check endpoint for monitoring and Render deployment.
+    Returns a JSON response indicating the application is running.
+    """
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.now().isoformat(),
+        'service': 'SecurePass Password Manager'
+    })
 
 def generate_secure_password(length):
     import secrets

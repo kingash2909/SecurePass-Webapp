@@ -75,15 +75,17 @@ A secure and user-friendly web-based password manager built with Flask and Pytho
 
 For production deployment, it's recommended to use a WSGI server like Gunicorn:
 
-1. Install Gunicorn:
+1. Install Gunicorn (already included in requirements.txt):
    ```bash
-   pip install gunicorn
+   pip install -r requirements.txt
    ```
 
 2. Run with Gunicorn:
    ```bash
-   gunicorn -w 4 -b 0.0.0.0:8000 app:app
+   gunicorn -w 4 -b 0.0.0.0:8000 wsgi:application
    ```
+
+Alternatively, you can use the built-in Render deployment configuration which automatically handles this.
 
 ## Usage
 
@@ -103,7 +105,13 @@ This application includes a `render.yaml` file for easy deployment on Render:
 2. Sign up for a Render account at https://render.com
 3. Create a new Web Service and connect it to your forked repository
 4. Render will automatically detect the `render.yaml` file and configure the service
-5. Add your environment variables in the Render dashboard
+5. Add your environment variables in the Render dashboard:
+   - `SMTP_SERVER`: Your SMTP server address
+   - `SMTP_PORT`: Your SMTP server port
+   - `SENDER_EMAIL`: The email address to send from
+   - `SENDER_PASSWORD`: App password for the sender email
+   - `EMAIL_USE_TLS`: Whether to use TLS (True or False)
+   - `SECRET_KEY`: (Optional) Flask secret key for sessions
 
 ### Other Deployment Options
 
