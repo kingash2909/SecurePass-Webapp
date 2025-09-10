@@ -14,6 +14,7 @@ A secure and user-friendly web-based password manager built with Flask and Pytho
 - **Responsive Design**: Works on desktop and mobile devices
 - **Password Recovery**: Secure password recovery using recovery keys
 - **Email Integration**: Password reset functionality via email
+- **Favicon**: Custom favicon for browser tabs and bookmarks
 
 ## Security Features
 
@@ -53,7 +54,12 @@ A secure and user-friendly web-based password manager built with Flask and Pytho
    pip install -r requirements.txt
    ```
 
-5. Configure email settings:
+5. (Optional) Generate a higher quality favicon:
+   ```bash
+   python generate_favicon.py
+   ```
+
+6. Configure email settings:
    - Copy `.env.example` to `.env`:
      ```bash
      cp .env.example .env
